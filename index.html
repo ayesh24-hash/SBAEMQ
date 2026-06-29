@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#04080f">
+<title>OG Revise — Team SBA/EMQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#04080f;--bg-1:#080f1e;--bg-2:#0d1529;--bg-3:#121c35;--bg-4:#1a2545;
+  --surface:#1e2d50;--surface-hi:#263660;
+  --cyan:#00d4ff;--teal:#00e5c0;--violet:#8b5cf6;
+  --rose:#f43f5e;--amber:#f59e0b;--green:#10b981;
+  --t1:#f0f4ff;--t2:#a8b8d8;--t3:#6478a0;--t4:#3a4e78;
+  --font:'Sora',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;min-height:100vh;background:var(--bg-0);color:var(--t1);
+  font-family:var(--font);font-size:14px;-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--bg-4);border-radius:4px}
+button{font-family:var(--font)}
+mark{background:rgba(0,212,255,0.3);color:var(--cyan);border-radius:3px}
+
+/* ── Top bar ── */
+.tw-top{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 18px;background:var(--bg-1);border-bottom:1px solid rgba(255,255,255,0.06);
+  position:sticky;top:0;z-index:50}
+.tw-brand{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:800;color:var(--t1);letter-spacing:-0.3px}
+.tw-brand .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#00d4ff,#8b5cf6);
+  display:flex;align-items:center;justify-content:center;font-size:16px}
+.tw-tabs{display:flex;gap:6px}
+.tw-tab{padding:8px 16px;border-radius:20px;border:1.5px solid var(--bg-4);background:var(--bg-2);
+  color:var(--t3);font-size:13px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.15s}
+.tw-tab.on{border-color:var(--cyan);background:rgba(0,212,255,0.1);color:var(--cyan)}
+
+.tw-wrap{max-width:900px;margin:0 auto;padding:18px 18px 60px;width:100%}
+
+/* ── Practice overlay (uses PWA's pp- classes) ── */
+/* ══ EXAM PAPERS (SBA/EMQ) ══ */
+#pp-view{font-family:'Sora',sans-serif}
+.pp-banner{width:100%;text-align:left;background:linear-gradient(135deg,#101d36,#0a1322);border:1.5px solid #1a2545;border-left:5px solid #f59e0b;border-radius:18px;padding:18px 20px;margin-bottom:14px;cursor:pointer;transition:all 0.18s;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.pp-banner:active{transform:scale(0.99)}
+.pp-banner:hover{border-color:#f59e0b;box-shadow:0 0 24px rgba(245,158,11,0.12)}
+/* Paper row with manage button */
+.pp-banner-row{display:flex;align-items:stretch;gap:8px;margin-bottom:14px}
+.pp-banner-row .pp-banner-main{flex:1;margin-bottom:0}
+.pp-banner-manage{flex-shrink:0;width:46px;border-radius:16px;border:1.5px solid #1a2545;background:#0d1529;color:#8a9ab8;font-size:22px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.15s;line-height:1}
+.pp-banner-manage:active{transform:scale(0.96)}
+.pp-banner-manage:hover{border-color:#8b5cf6;color:#a78bfa}
+/* Manage modal */
+.pp-mm-back{position:fixed;inset:0;z-index:100000;background:rgba(2,5,12,0.72);display:none;align-items:flex-end;justify-content:center}
+.pp-mm-back.on{display:flex}
+.pp-mm{background:#0a1322;border:1.5px solid #1a2545;border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;padding:18px 18px 28px;animation:ppMmUp 0.22s cubic-bezier(.22,1,.36,1)}
+@keyframes ppMmUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.pp-mm-grab{width:38px;height:4px;background:#2a3a5c;border-radius:2px;margin:2px auto 14px}
+.pp-mm-title{font-size:17px;font-weight:800;color:#f0f4ff;margin-bottom:3px}
+.pp-mm-sub{font-size:12px;color:#6478a0;margin-bottom:16px;line-height:1.5}
+.pp-mm-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:#8a9ab8;margin:14px 0 7px}
+.pp-mm-sel{width:100%;background:#04080f;border:1.5px solid #2a3a5e;border-radius:11px;padding:12px 14px;color:#e2e9f7;font-size:14px;font-family:'Sora',sans-serif;cursor:pointer;outline:none}
+.pp-mm-sel:focus{border-color:#00d4ff}
+.pp-mm-row{display:flex;gap:10px;margin-top:20px}
+.pp-mm-btn{flex:1;padding:13px;border-radius:13px;border:1.5px solid #1a2545;background:#0d1529;color:#c8d4ec;font-size:14px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;-webkit-tap-highlight-color:transparent}
+.pp-mm-btn.save{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.5);color:#10b981}
+.pp-mm-btn.del{background:rgba(244,63,94,0.1);border-color:rgba(244,63,94,0.45);color:#f43f5e}
+.pp-mm-btn:active{transform:scale(0.98)}
+.pp-banner-title{font-size:17px;font-weight:800;color:#f0f4ff;letter-spacing:-0.3px;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.pp-banner-sub{font-size:12px;color:#6478a0;line-height:1.5}
+.pp-banner-meta{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+.pp-chip{font-size:10px;font-weight:800;padding:4px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace}
+.pp-chip.sba{background:rgba(0,212,255,0.14);color:#00d4ff}
+.pp-chip.emq{background:rgba(245,158,11,0.14);color:#f59e0b}
+.pp-chip.score{background:rgba(16,185,129,0.14);color:#10b981}
+.pp-chip.src{background:rgba(139,92,246,0.12);color:#a78bfa}
+/* Question card */
+.pp-qcard{background:#0a1322;border:1.5px solid #1a2545;border-radius:18px;padding:22px 22px 18px;margin-bottom:16px}
+.pp-qnum{font-size:11px;font-weight:800;color:#f59e0b;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.pp-stem{font-size:15px;color:#e2e9f7;line-height:1.6;margin-bottom:6px}
+.pp-lead{font-size:14px;color:#a8b8d8;font-weight:700;margin:12px 0 14px;line-height:1.5}
+.pp-theme{font-size:13px;font-weight:800;color:#f59e0b;margin-bottom:6px}
+.pp-instr{font-size:12px;color:#6478a0;margin-bottom:14px;font-style:italic}
+/* answer option — like sp-pill */
+.pp-opt{width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:13px;margin-bottom:9px;cursor:pointer;border:1.5px solid #1a2545;background:#0d1529;transition:all 0.15s;-webkit-tap-highlight-color:transparent;text-align:left;font-family:'Sora',sans-serif}
+.pp-opt:active{transform:scale(0.985)}
+.pp-opt.sel{border-color:#00d4ff;background:rgba(0,212,255,0.08);box-shadow:0 0 14px rgba(0,212,255,0.12)}
+.pp-opt.correct{border-color:#10b981;background:rgba(16,185,129,0.16);box-shadow:0 0 16px rgba(16,185,129,0.18)}
+.pp-opt.wrong{border-color:#f43f5e;background:rgba(244,63,94,0.14)}
+.pp-opt.locked{cursor:default}
+.pp-opt-letter{width:26px;height:26px;flex-shrink:0;border-radius:8px;background:#121c35;color:#8a9ab8;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace}
+.pp-opt.sel .pp-opt-letter{background:#00d4ff;color:#04080f}
+.pp-opt.correct .pp-opt-letter{background:#10b981;color:#04080f}
+.pp-opt.wrong .pp-opt-letter{background:#f43f5e;color:#fff}
+.pp-opt-text{font-size:14px;color:#c8d4ec;line-height:1.45;flex:1;font-weight:500}
+.pp-opt-mark{font-size:16px;flex-shrink:0}
+/* EMQ dropdown */
+.pp-emq-stem{background:#0d1529;border:1.5px solid #1a2545;border-radius:13px;padding:15px 16px;margin-bottom:12px}
+.pp-emq-stem.correct{border-color:#10b981;background:rgba(16,185,129,0.1)}
+.pp-emq-stem.wrong{border-color:#f43f5e;background:rgba(244,63,94,0.09)}
+.pp-emq-q{font-size:14px;color:#e2e9f7;line-height:1.55;margin-bottom:11px}
+.pp-emq-sel{width:100%;background:#04080f;border:1.5px solid #2a3a5e;border-radius:11px;padding:12px 14px;color:#e2e9f7;font-size:13px;font-family:'Sora',sans-serif;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a9ab8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.pp-emq-sel:focus{border-color:#00d4ff}
+.pp-emq-sel.correct{border-color:#10b981}
+.pp-emq-sel.wrong{border-color:#f43f5e}
+/* Custom stylised EMQ dropdown (replaces native OS picker) */
+.pp-emqdd{position:relative;width:100%}
+.pp-emqdd-btn{width:100%;display:flex;align-items:center;gap:12px;background:#04080f;border:1.5px solid #2a3a5e;border-radius:12px;padding:13px 15px;color:#e2e9f7;font-size:14px;font-family:'Sora',sans-serif;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent;text-align:left;transition:all 0.15s}
+.pp-emqdd-btn:active{transform:scale(0.99)}
+.pp-emqdd.open .pp-emqdd-btn{border-color:#00d4ff;box-shadow:0 0 14px rgba(0,212,255,0.14)}
+.pp-emqdd-btn.correct{border-color:#10b981;background:rgba(16,185,129,0.1)}
+.pp-emqdd-btn.wrong{border-color:#f43f5e;background:rgba(244,63,94,0.09)}
+.pp-emqdd-letter{width:26px;height:26px;flex-shrink:0;border-radius:8px;background:#121c35;color:#8a9ab8;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace}
+.pp-emqdd-btn.has .pp-emqdd-letter{background:#00d4ff;color:#04080f}
+.pp-emqdd-btn.correct .pp-emqdd-letter{background:#10b981;color:#04080f}
+.pp-emqdd-btn.wrong .pp-emqdd-letter{background:#f43f5e;color:#fff}
+.pp-emqdd-lbl{flex:1;line-height:1.4;color:#c8d4ec;font-weight:500}
+.pp-emqdd-btn.placeholder .pp-emqdd-lbl{color:#5f7398}
+.pp-emqdd-chev{flex-shrink:0;color:#8a9ab8;transition:transform 0.2s;font-size:12px}
+.pp-emqdd.open .pp-emqdd-chev{transform:rotate(180deg)}
+.pp-emqdd-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;background:#0a1322;border:1.5px solid #2a3a5e;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,0.6);padding:7px;max-height:340px;overflow-y:auto;display:none;animation:ppFade 0.16s ease}
+.pp-emqdd.open .pp-emqdd-menu{display:block}
+.pp-emqdd-item{width:100%;display:flex;align-items:flex-start;gap:11px;padding:11px 12px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;background:transparent;text-align:left;font-family:'Sora',sans-serif;transition:all 0.12s;margin-bottom:3px}
+.pp-emqdd-item:last-child{margin-bottom:0}
+.pp-emqdd-item:hover,.pp-emqdd-item:active{background:#0d1529;border-color:#1a2545}
+.pp-emqdd-item.sel{background:rgba(0,212,255,0.08);border-color:#00d4ff}
+.pp-emqdd-item .pp-emqdd-letter{margin-top:1px}
+.pp-emqdd-item-text{flex:1;font-size:13.5px;color:#c8d4ec;line-height:1.5;font-weight:500}
+/* rationale */
+.pp-rationale{margin-top:14px;padding:14px 16px;border-radius:13px;background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.25);font-size:13px;color:#c8d4ec;line-height:1.6;animation:ppFade 0.3s ease}
+.pp-rationale.ok{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.3)}
+.pp-rationale.no{background:rgba(244,63,94,0.07);border-color:rgba(244,63,94,0.28)}
+.pp-rationale-hd{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px}
+.pp-hook{margin-top:9px;padding:9px 12px;background:rgba(245,158,11,0.1);border-left:3px solid #f59e0b;border-radius:8px;font-size:13px;color:#f0c674;font-weight:600}
+@keyframes ppFade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.pp-btn{padding:13px 22px;border-radius:13px;border:none;font-size:14px;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;-webkit-tap-highlight-color:transparent;transition:all 0.15s}
+.pp-btn:active{transform:scale(0.97)}
+.pp-btn-check{background:linear-gradient(135deg,#00d4ff,#00e5c0);color:#04080f;width:100%}
+.pp-btn-save{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff}
+.pp-btn-next{background:linear-gradient(135deg,#f59e0b,#d97706);color:#04080f}
+.pp-btn-ghost{background:#0d1529;border:1.5px solid #1a2545;color:#a8b8d8}
+.pp-btn:disabled{opacity:0.4;cursor:default}
+@media(max-width:640px){ .pp-banner-title{font-size:15px} }
+
+
+/* practice overlay shell */
+#pp-view{display:none;position:fixed;inset:0;z-index:9999;flex-direction:column;overflow:hidden;background:var(--bg-0)}
+#pp-view.on{display:flex}
+.pp-topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  padding:16px 20px 14px;background:var(--bg-1);border-bottom:1px solid var(--bg-4);flex-shrink:0}
+#pp-body{flex:1;overflow-y:auto;padding:18px 20px;max-width:900px;margin:0 auto;width:100%}
+.pp-topbtn{display:inline-flex;align-items:center;gap:5px;padding:9px 15px;border-radius:22px;
+  font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);-webkit-tap-highlight-color:transparent;white-space:nowrap}
+
+/* ── Uploader ── */
+.up-card{background:var(--bg-1);border:1px solid var(--bg-4);border-radius:18px;padding:20px;margin-bottom:16px}
+.up-label{font-size:11px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;display:block}
+.up-sel,.up-inp{width:100%;background:var(--bg-2);border:1.5px solid var(--bg-4);border-radius:11px;
+  padding:12px 14px;color:var(--t1);font-size:13px;font-family:var(--font);outline:none;-webkit-tap-highlight-color:transparent}
+.up-sel:focus,.up-inp:focus{border-color:var(--cyan)}
+.up-drop{border:2px dashed var(--bg-4);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;
+  position:relative;transition:all 0.15s;background:var(--bg-2)}
+.up-drop.over{border-color:var(--cyan);background:rgba(0,212,255,0.05)}
+.up-drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.up-btn{padding:13px 22px;border-radius:13px;border:none;font-size:14px;font-weight:800;cursor:pointer;
+  font-family:var(--font);-webkit-tap-highlight-color:transparent;transition:all 0.15s;width:100%}
+.up-btn:active{transform:scale(0.98)}
+.up-btn-go{background:linear-gradient(135deg,#f59e0b,#d97706);color:#04080f}
+.up-dd{display:none;position:absolute;top:100%;left:0;right:0;z-index:200;background:var(--bg-2);
+  border:1px solid var(--amber);border-radius:0 0 11px 11px;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.up-opt{padding:10px 14px;font-size:13px;color:var(--t1);cursor:pointer;border-bottom:1px solid var(--bg-3)}
+.up-opt:hover,.up-opt:active{background:rgba(0,212,255,0.12);color:var(--cyan)}
+.up-row{background:var(--bg-1);border:1px solid var(--bg-4);border-radius:12px;padding:12px 14px;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px}
+.up-row .meta{font-size:11px;color:var(--t3);font-family:var(--mono)}
+.up-del{background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.3);color:var(--rose);
+  border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* ── Toast ── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);z-index:99999;
+  background:var(--bg-3);border:1px solid var(--bg-4);color:var(--t1);padding:12px 20px;border-radius:12px;
+  font-size:13px;font-weight:600;opacity:0;transition:all 0.3s;max-width:90vw;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast.ok,#toast.green{border-color:var(--green);color:var(--green)}
+#toast.err,#toast.rose{border-color:var(--rose);color:var(--rose)}
+#toast.info{border-color:var(--cyan);color:var(--cyan)}
+
+.empty-state{text-align:center;padding:50px 20px;color:var(--t3)}
+.empty-state .ic{font-size:44px;margin-bottom:14px}
+.empty-state .h{font-size:16px;font-weight:700;color:var(--t2)}
+.empty-state .s{font-size:13px;margin-top:10px;line-height:1.6}
+@media(max-width:640px){ .tw-wrap{padding:14px 14px 50px} .tw-brand{font-size:15px} }
+</style>
+</head>
+<body>
+
+<div class="tw-top">
+  <div class="tw-brand"><span class="logo">🩺</span><span>OG Revise <span style="color:var(--t3);font-weight:600">· Team</span></span></div>
+  <div class="tw-tabs">
+    <button class="tw-tab on" id="tab-practice" onclick="twTab('practice')">🧪 Practice</button>
+    <button class="tw-tab" id="tab-upload" onclick="twTab('upload')">📥 Add Papers</button>
+  </div>
+</div>
+
+<div class="tw-wrap" id="tw-main"></div>
+
+<!-- Practice overlay -->
+<div id="pp-view">
+  <div class="pp-topbar">
+    <div style="flex:1;min-width:0">
+      <div id="pp-hdr-title" style="font-size:22px;font-weight:800;color:var(--t1);letter-spacing:-0.4px;line-height:1.15">🧪 Exam Papers</div>
+      <div id="pp-hdr-sub" style="font-size:13px;font-weight:700;color:var(--amber);font-family:var(--mono);margin-top:3px">SBA &amp; EMQ practice</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+      <button id="pp-back-btn" onclick="ppBack()" class="pp-topbtn" style="display:none;border:1.5px solid var(--bg-4);background:var(--bg-2);color:var(--t2)">◀ Papers</button>
+      <button onclick="ppExit()" class="pp-topbtn" style="border:1.5px solid rgba(244,63,94,0.5);background:rgba(244,63,94,0.08);color:var(--rose)">✕</button>
+    </div>
+  </div>
+  <div id="pp-body"></div>
+</div>
+
+<!-- Paper manage modal (move / delete) -->
+<div class="pp-mm-back" id="pp-mm-back" onclick="if(event.target===this)ppManageClose()">
+  <div class="pp-mm">
+    <div class="pp-mm-grab"></div>
+    <div class="pp-mm-title" id="pp-mm-title">Manage paper</div>
+    <div class="pp-mm-sub" id="pp-mm-sub"></div>
+    <div class="pp-mm-label">Category</div>
+    <select class="pp-mm-sel" id="pp-mm-cat" onchange="ppManageCatChange()"></select>
+    <div class="pp-mm-label" id="pp-mm-sub-label">Section</div>
+    <select class="pp-mm-sel" id="pp-mm-subcat"></select>
+    <div class="pp-mm-row">
+      <button class="pp-mm-btn save" onclick="ppManageSave()">💾 Move here</button>
+      <button class="pp-mm-btn" onclick="ppManageClose()">Cancel</button>
+    </div>
+    <div class="pp-mm-row" style="margin-top:10px">
+      <button class="pp-mm-btn del" onclick="ppManageDelete()">🗑 Delete this paper</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════
+   OG REVISE — TEAM (friends' SBA/EMQ app)
+   Local storage via IndexedDB. Mirrors the
+   SBA/EMQ section of the main PWA.
+   ════════════════════════════════════════ */
+
+function toast(msg,type='info'){const el=document.getElementById('toast');el.textContent=msg;el.className='show '+type;clearTimeout(window._tt);window._tt=setTimeout(()=>el.classList.remove('show'),3000);}
+function spToday(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+/* ── Shared taxonomy (same as main app) ── */
+const PP_TAXONOMY = {
+  "Obstetrics": ["Antenatal care","Intrapartum care","Medical disorders in pregnancy","Obstetric emergencies","Postnatal care"],
+  "Gynaecology": ["Adolescent gynaecology","Benign gynaecology","Oncology","Subfertility","Urogynaecology and POP"],
+  "TOG": ["2026 TOG","2025 TOG","2024 TOG","2023 TOG","2022 TOG","2021 TOG","2020 TOG","2019 TOG","2018 TOG","2017 TOG","2016 TOG"],
+  "Statistics": [],
+  "Paper books": []
+};
+const PP_CAT_ICON = { "Obstetrics":"🤰","Gynaecology":"🩺","TOG":"📰","Statistics":"📊","Paper books":"📚","Uncategorised":"📁" };
+const ALL_FOLDERS = []; // topic suggestions (optional)
+
+/* ════════ IndexedDB layer ════════ */
+const DB_NAME='ogrevise-team', DB_VER=1, STORE='papers';
+let _db=null;
+function dbOpen(){
+  return new Promise((res,rej)=>{
+    if(_db) return res(_db);
+    const r=indexedDB.open(DB_NAME,DB_VER);
+    r.onupgradeneeded=e=>{ const db=e.target.result; if(!db.objectStoreNames.contains(STORE)){ db.createObjectStore(STORE,{keyPath:'id'}); } };
+    r.onsuccess=e=>{ _db=e.target.result; res(_db); };
+    r.onerror=e=>rej(e.target.error);
+  });
+}
+async function dbAll(){
+  const db=await dbOpen();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(STORE,'readonly').objectStore(STORE).getAll();
+    tx.onsuccess=()=>res(tx.result||[]); tx.onerror=()=>rej(tx.error);
+  });
+}
+async function dbPut(rec){
+  const db=await dbOpen();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(STORE,'readwrite').objectStore(STORE).put(rec);
+    tx.onsuccess=()=>res(true); tx.onerror=()=>rej(tx.error);
+  });
+}
+async function dbGet(id){
+  const db=await dbOpen();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(STORE,'readonly').objectStore(STORE).get(id);
+    tx.onsuccess=()=>res(tx.result||null); tx.onerror=()=>rej(tx.error);
+  });
+}
+async function dbDel(id){
+  const db=await dbOpen();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(STORE,'readwrite').objectStore(STORE).delete(id);
+    tx.onsuccess=()=>res(true); tx.onerror=()=>rej(tx.error);
+  });
+}
+
+/* ════════ Practice state (mirrors PWA's PP) ════════ */
+const PP = {
+  list: [], loaded:false, paper:null, fileId:null,
+  view:'root', navCat:null, navSub:null,
+  flat:[], idx:0, answers:{}, undoStack:[], mode:null, _sel:null
+};
+
+/* ════════ Tab switching ════════ */
+function twTab(t){
+  document.getElementById('tab-practice').classList.toggle('on',t==='practice');
+  document.getElementById('tab-upload').classList.toggle('on',t==='upload');
+  if(t==='practice'){ document.getElementById('pp-view').classList.add('on'); ppShow(); }
+  else {
+    document.getElementById('pp-view').classList.remove('on');
+    // abandon any in-progress paper so returning lands on the list
+    if(PP.view==='paper'||PP.view==='result'){ PP.paper=null; PP.fileId=null; PP.view=PP.navSub?'sub':(PP.navCat?'cat':'root'); }
+    renderUploader();
+  }
+}
+function ppExit(){
+  document.getElementById('pp-view').classList.remove('on');
+  document.getElementById('tab-practice').classList.remove('on');
+  document.getElementById('tab-upload').classList.add('on');
+  // reset any in-progress paper so re-entering Practice lands on the list
+  PP.paper=null; PP.fileId=null;
+  PP.view = PP.navSub?'sub':(PP.navCat?'cat':'root');
+  renderUploader();
+}
+
+/* ════════ Load papers from IndexedDB ════════ */
+async function ppShow(){
+  if(PP.view==='paper'||PP.view==='result'){ return; }
+  if(!PP.loaded){ await ppLoadList(); } else { ppRenderNav(); }
+}
+async function ppLoadList(){
+  const body=document.getElementById('pp-body');
+  body.innerHTML='<div class="empty-state"><div class="ic">⏳</div>Loading…</div>';
+  try{
+    const recs=await dbAll();
+    PP.list=recs.map(r=>({fileId:r.id, name:r.name, data:r.data, category:r.category||'Uncategorised', subcategory:r.subcategory||''}));
+    PP.loaded=true;
+    ppRenderNav();
+  }catch(e){ body.innerHTML='<div class="empty-state"><div class="ic">⚠️</div>Could not open local storage.</div>'; }
+}
+function ppRefresh(){ PP.loaded=false; PP.view='root'; PP.navCat=null; PP.navSub=null; ppLoadList(); }
+
+/* ════════ Categorised navigation (mirrors PWA) ════════ */
+function ppRenderNav(){
+  const body=document.getElementById('pp-body');
+  const backBtn=document.getElementById('pp-back-btn');
+  const refreshBar='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-size:11px;color:var(--t4)">'+PP.list.length+' papers saved on this device</div><button class="pp-btn pp-btn-ghost" style="padding:8px 14px;font-size:12px" onclick="twTab(\'upload\')">📥 Add papers</button></div>';
+
+  if(!PP.list.length){
+    document.getElementById('pp-hdr-title').textContent='🧪 Exam Papers';
+    document.getElementById('pp-hdr-sub').textContent='SBA & EMQ practice';
+    backBtn.style.display='none';
+    body.innerHTML='<div class="empty-state"><div class="ic">📝</div><div class="h">No papers yet</div><div class="s">Tap <strong style="color:var(--amber)">📥 Add Papers</strong> above to load the SBA/EMQ JSON files shared with you.</div></div>';
+    return;
+  }
+  // ROOT
+  if(PP.view==='root'||!PP.navCat){
+    PP.view='root'; PP.navCat=null; PP.navSub=null;
+    document.getElementById('pp-hdr-title').textContent='🧪 Exam Papers';
+    document.getElementById('pp-hdr-sub').textContent='Choose a category';
+    backBtn.style.display='none';
+    const cats=ppCategoriesInUse();
+    let h=refreshBar;
+    cats.forEach(cat=>{
+      const papers=PP.list.filter(p=>p.category===cat);
+      const subs=[...new Set(papers.map(p=>p.subcategory).filter(Boolean))];
+      h+='<button class="pp-banner" style="border-left-color:#8b5cf6" onclick="ppGoCat(\''+ppAttr(cat)+'\')"><div class="pp-banner-title">'+(PP_CAT_ICON[cat]||'📁')+' '+ppEsc(cat)+'</div><div class="pp-banner-meta"><span class="pp-chip emq">'+papers.length+' paper'+(papers.length===1?'':'s')+'</span>'+(subs.length?'<span class="pp-chip src">'+subs.length+' section'+(subs.length===1?'':'s')+'</span>':'')+'</div></button>';
+    });
+    body.innerHTML=h; return;
+  }
+  // CATEGORY
+  if(PP.view==='cat'&&PP.navCat){
+    document.getElementById('pp-hdr-title').textContent=(PP_CAT_ICON[PP.navCat]||'📁')+' '+PP.navCat;
+    document.getElementById('pp-hdr-sub').textContent='Choose a section';
+    backBtn.style.display='inline-flex'; backBtn.textContent='◀ Categories';
+    const papers=PP.list.filter(p=>p.category===PP.navCat);
+    const presentSubs=[...new Set(papers.map(p=>p.subcategory).filter(Boolean))];
+    const taxoSubs=PP_TAXONOMY[PP.navCat]||[];
+    const subs=[...taxoSubs, ...presentSubs.filter(s=>!taxoSubs.includes(s)).sort()];
+    const noSub=papers.filter(p=>!p.subcategory);
+    let h='';
+    subs.forEach(sub=>{ const n=papers.filter(p=>p.subcategory===sub).length; h+='<button class="pp-banner" style="border-left-color:#00d4ff" onclick="ppGoSub(\''+ppAttr(sub)+'\')"><div class="pp-banner-title">📂 '+ppEsc(sub)+'</div><div class="pp-banner-meta"><span class="pp-chip sba">'+n+' paper'+(n===1?'':'s')+'</span></div></button>'; });
+    if(noSub.length){ if(subs.length) h+='<div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700;margin:16px 0 8px">Other papers</div>'; noSub.forEach(p=>{ h+=ppPaperBanner(p); }); }
+    body.innerHTML=h; return;
+  }
+  // SUBCATEGORY
+  if(PP.view==='sub'&&PP.navCat&&PP.navSub){
+    document.getElementById('pp-hdr-title').textContent='📂 '+PP.navSub;
+    document.getElementById('pp-hdr-sub').textContent=PP.navCat;
+    backBtn.style.display='inline-flex'; backBtn.textContent='◀ '+PP.navCat;
+    const papers=PP.list.filter(p=>p.category===PP.navCat&&p.subcategory===PP.navSub);
+    let h=''; papers.forEach(p=>{ h+=ppPaperBanner(p); });
+    body.innerHTML=h; return;
+  }
+  PP.view='root'; ppRenderNav();
+}
+function ppCategoriesInUse(){
+  const order=["Obstetrics","Gynaecology","TOG","Statistics","Paper books","Uncategorised"];
+  const present=[...new Set(PP.list.map(p=>p.category||'Uncategorised'))];
+  const taxoCats=Object.keys(PP_TAXONOMY);
+  const all=[...new Set([...taxoCats, ...present])];
+  return order.filter(c=>all.includes(c)).concat(all.filter(c=>!order.includes(c)));
+}
+function ppGoCat(c){ PP.navCat=c; PP.navSub=null; PP.view='cat'; ppRenderNav(); }
+function ppGoSub(s){ PP.navSub=s; PP.view='sub'; ppRenderNav(); }
+
+/* ════════ Paper management: move (change category/section) & delete ════════ */
+let PP_MM_TARGET=null; // the paper record being managed
+function ppManagePaper(i){
+  const p=PP.list[i]; if(!p) return;
+  PP_MM_TARGET=p;
+  const d=p.data||{};
+  const title=d.topic||p.name.replace(/^papers__/,'').replace(/\.json$/,'');
+  document.getElementById('pp-mm-title').textContent='Manage: '+title;
+  document.getElementById('pp-mm-sub').textContent='Move it to another category/section, or delete it.';
+  const cats=Object.keys(PP_TAXONOMY).concat(['Uncategorised']);
+  const catSel=document.getElementById('pp-mm-cat');
+  catSel.innerHTML=cats.map(c=>'<option value="'+ppAttr(c)+'">'+(PP_CAT_ICON[c]||'📁')+' '+ppEsc(c)+'</option>').join('');
+  catSel.value=p.category||'Uncategorised';
+  ppManageCatChange(p.subcategory||'');
+  document.getElementById('pp-mm-back').classList.add('on');
+}
+function ppManageCatChange(preset){
+  const cat=document.getElementById('pp-mm-cat').value;
+  const subs=PP_TAXONOMY[cat]||[];
+  const subSel=document.getElementById('pp-mm-subcat');
+  const label=document.getElementById('pp-mm-sub-label');
+  if(subs.length){
+    label.style.display='block'; subSel.style.display='block';
+    subSel.innerHTML='<option value="">— none —</option>'+subs.map(s=>'<option value="'+ppAttr(s)+'">'+ppEsc(s)+'</option>').join('');
+    if(typeof preset==='string' && preset){
+      subSel.value=preset;
+      if(subSel.value!==preset){ subSel.innerHTML+='<option value="'+ppAttr(preset)+'">'+ppEsc(preset)+'</option>'; subSel.value=preset; }
+    }
+  } else {
+    label.style.display='none'; subSel.style.display='none'; subSel.innerHTML='';
+  }
+}
+function ppManageClose(){ document.getElementById('pp-mm-back').classList.remove('on'); PP_MM_TARGET=null; }
+async function ppManageSave(){
+  if(!PP_MM_TARGET){ ppManageClose(); return; }
+  const cat=document.getElementById('pp-mm-cat').value;
+  const subSel=document.getElementById('pp-mm-subcat');
+  const sub=(subSel.style.display==='none')?'':(subSel.value||'');
+  try{
+    const rec=await dbGet(PP_MM_TARGET.fileId);
+    if(!rec){ toast('Paper not found','err'); ppManageClose(); return; }
+    rec.category=cat; rec.subcategory=sub;
+    if(rec.data){ rec.data.category=cat; rec.data.subcategory=sub; }
+    await dbPut(rec);
+    PP_MM_TARGET.category=cat; PP_MM_TARGET.subcategory=sub;
+    if(PP_MM_TARGET.data){ PP_MM_TARGET.data.category=cat; PP_MM_TARGET.data.subcategory=sub; }
+    toast('Moved to '+cat+(sub?' · '+sub:''),'ok');
+    ppManageClose();
+    ppRenderNav();
+  }catch(e){ toast('Move failed: '+e.message,'err'); }
+}
+async function ppManageDelete(){
+  if(!PP_MM_TARGET){ ppManageClose(); return; }
+  const d=PP_MM_TARGET.data||{};
+  const title=d.topic||PP_MM_TARGET.name.replace(/^papers__/,'').replace(/\.json$/,'');
+  if(!confirm('Delete "'+title+'"? This removes the paper and its saved scores on this device. This cannot be undone.')) return;
+  try{
+    await dbDel(PP_MM_TARGET.fileId);
+    if(typeof ppClearProgress==='function') ppClearProgress(PP_MM_TARGET.fileId);
+    PP.list=PP.list.filter(p=>p.fileId!==PP_MM_TARGET.fileId);
+    toast('Paper deleted','ok');
+    ppManageClose();
+    ppRenderNav();
+  }catch(e){ toast('Delete failed: '+e.message,'err'); }
+}
+function ppPaperBanner(p){
+  const i=PP.list.indexOf(p);
+  const d=p.data||{};
+  const ns=(d.sba||[]).length;
+  const ne=(d.emq||[]).reduce((a,g)=>a+(g.stems||[]).length,0);
+  const title=d.topic||p.name.replace(/^papers__/,'').replace(/\.json$/,'');
+  const best=ppBestScore(d);
+  const prog=(typeof ppGetProgress==='function')?ppGetProgress(p.fileId):null;
+  const progChip = (prog && prog.answers) ? '<span class="pp-chip" style="background:rgba(245,158,11,0.14);color:#f59e0b;border:1px solid rgba(245,158,11,0.35)">⏸️ In progress '+Object.keys(prog.answers).length+'/'+(prog.total||'?')+'</span>' : '';
+  const inner='<div class="pp-banner-title">📄 '+ppEsc(title)+'</div>'+(d.description?'<div class="pp-banner-sub">'+ppEsc(d.description)+'</div>':'')+'<div class="pp-banner-meta">'+(ns?'<span class="pp-chip sba">'+ns+' SBA</span>':'')+(ne?'<span class="pp-chip emq">'+ne+' EMQ</span>':'')+(d.source?'<span class="pp-chip src">📖 '+ppEsc(d.source.slice(0,28))+'</span>':'')+(best!=null?'<span class="pp-chip score">🏆 Best '+best+'%</span>':'')+progChip+'</div>';
+  return '<div class="pp-banner-row"><button class="pp-banner pp-banner-main" onclick="ppOpen('+i+')">'+inner+'</button>'
+    +'<button class="pp-banner-manage" title="Manage paper" onclick="event.stopPropagation();ppManagePaper('+i+')">⋯</button></div>';
+}
+
+/* ════════ Back navigation ════════ */
+function ppBack(){
+  if(PP.view==='paper'||PP.view==='result'){ PP.paper=null; PP.fileId=null; PP.view=PP.navSub?'sub':(PP.navCat?'cat':'root'); }
+  else if(PP.view==='sub'){ PP.navSub=null; PP.view='cat'; }
+  else if(PP.view==='cat'){ PP.navCat=null; PP.view='root'; }
+  ppRenderNav();
+}
+
+/* ════════ Save attempt to IndexedDB (replaces Drive) ════════ */
+async function ppSaveAttempt(pct, correct, total){
+  if(!PP.fileId) return;
+  if(PP._savedThisResult===PP.fileId+':'+pct+':'+correct) return;
+  try{
+    const rec=await dbGet(PP.fileId);
+    if(!rec) return;
+    if(!Array.isArray(rec.data.attempts)) rec.data.attempts=[];
+    rec.data.attempts.push({date:spToday(), pct, correct, total, at:Date.now()});
+    if(rec.data.attempts.length>50) rec.data.attempts=rec.data.attempts.slice(-50);
+    await dbPut(rec);
+    PP.paper.attempts=rec.data.attempts;
+    const li=PP.list.find(p=>p.fileId===PP.fileId); if(li) li.data.attempts=rec.data.attempts;
+    PP._savedThisResult=PP.fileId+':'+pct+':'+correct;
+  }catch(e){}
+}
+function ppSaveManual(){ if(PP.view==='result'){ toast('Score saved','ok'); } else { toast('Finish the paper to save your score','info'); } }
+
+/* ════════════════════════════════════════
+   VERBATIM PRACTICE ENGINE (from main PWA)
+   ════════════════════════════════════════ */
+function ppAttr(s){ return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
+function ppEsc(s){ return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function ppBestScore(d){
+  const a=d.attempts||[]; if(!a.length) return null;
+  return Math.max(...a.map(x=>x.pct));
+}
+
+// ── Open a paper: flatten into a question sequence ──
+function ppOpen(i){
+  const p=PP.list[i]; if(!p) return;
+  PP.paper=p.data; PP.fileId=p.fileId; PP.view='paper';
+  PP.idx=0; PP.answers={}; PP.undoStack=[]; PP.mode=null; PP._sel=null;
+  // Flatten: all SBAs, then each EMQ stem (carrying its set context)
+  const flat=[];
+  (PP.paper.sba||[]).forEach((q,si)=>flat.push({kind:'sba', q, key:`sba${si}`, n:si+1}));
+  (PP.paper.emq||[]).forEach((g,gi)=>{
+    (g.stems||[]).forEach((st,sti)=>flat.push({kind:'emq', set:g, st, key:`emq${gi}_${sti}`, gi, sti, setN:gi+1, stN:sti+1, setTotal:(g.stems||[]).length}));
+  });
+  PP.flat=flat;
+  const bb=document.getElementById('pp-back-btn');
+  bb.style.display='inline-flex';
+  bb.textContent = PP.navSub ? `◀ ${PP.navSub}` : (PP.navCat ? `◀ ${PP.navCat}` : '◀ Papers');
+  // Resume prompt if a half-finished attempt exists
+  const prog=ppGetProgress(PP.fileId);
+  if(prog && prog.answers && Object.keys(prog.answers).length && Object.keys(prog.answers).length<flat.length){
+    ppRenderResumePrompt(prog);
+  } else {
+    if(prog) ppClearProgress(PP.fileId);
+    ppRenderQuestion();
+  }
+}
+
+// ── Render the current question ──
+function ppRenderQuestion(){
+  const item=PP.flat[PP.idx];
+  if(!item){ ppRenderResult(); return; }
+  const total=PP.flat.length;
+  document.getElementById('pp-hdr-title').textContent=PP.paper.topic||'Paper';
+  document.getElementById('pp-hdr-sub').textContent=`Question ${PP.idx+1} of ${total}`;
+  const body=document.getElementById('pp-body');
+  const ans=PP.answers[item.key];
+  let h='';
+
+  // progress strip
+  const answered=Object.keys(PP.answers).length;
+  h+=`<div style="height:6px;background:#121c35;border-radius:4px;overflow:hidden;margin-bottom:18px"><div style="height:100%;width:${Math.round(answered/total*100)}%;background:linear-gradient(90deg,#00d4ff,#f59e0b);transition:width 0.4s"></div></div>`;
+
+  if(item.kind==='sba'){
+    h+=ppRenderSBA(item, ans);
+  } else {
+    h+=ppRenderEMQ(item, ans);
+  }
+  body.innerHTML=h;
+  body.scrollTop=0;
+}
+
+function ppRenderSBA(item, ans){
+  const q=item.q;
+  const letters=['A','B','C','D','E'];
+  const reveal = ans && PP.mode==='instant';   // only reveal correctness in instant mode
+  let h=`<div class="pp-qcard"><div class="pp-qnum">🅰️ SBA · Q${item.n}</div>`;
+  h+=`<div class="pp-stem">${ppEsc(q.stem)}</div>`;
+  if(q.lead) h+=`<div class="pp-lead">${ppEsc(q.lead)}</div>`;
+  q.options.forEach((opt,oi)=>{
+    let cls='pp-opt';
+    if(reveal){
+      cls+=' locked';
+      if(oi===q.answer) cls+=' correct';
+      else if(oi===ans.picked) cls+=' wrong';
+    } else if(ans && ans.picked===oi){ cls+=' sel'; }   // review mode: just show saved pick
+    else if(!ans && PP._sel===oi){ cls+=' sel'; }
+    const mark = reveal ? (oi===q.answer?'<span class="pp-opt-mark">✅</span>':(oi===ans.picked?'<span class="pp-opt-mark">❌</span>':'')) : '';
+    const clickable = reveal ? false : true;
+    h+=`<button class="${cls}" ${clickable?`onclick="ppSelectSBA(${oi})"`:''}>
+      <span class="pp-opt-letter">${letters[oi]}</span>
+      <span class="pp-opt-text">${ppEsc(opt)}</span>${mark}</button>`;
+  });
+  if(reveal){
+    h+=ppRationale(ans.correct, q.rationale, q.hook);
+  } else {
+    h+=ppAnswerButtons(item.key, 'sba', !!ans);
+  }
+  h+=`</div>`;
+  h+=ppNavRow(reveal);
+  h+=ppJumpGrid();
+  return h;
+}
+
+function ppRenderEMQ(item, ans){
+  const g=item.set, st=item.st;
+  const reveal = ans && PP.mode==='instant';
+  let h=`<div class="pp-qcard"><div class="pp-qnum">🔠 EMQ · Set ${item.setN} · Q${item.stN}/${item.setTotal}</div>`;
+  h+=`<div class="pp-theme">${ppEsc(g.theme||'')}</div>`;
+  if(g.instruction) h+=`<div class="pp-instr">${ppEsc(g.instruction)}</div>`;
+  let stemCls='pp-emq-stem';
+  if(reveal) stemCls+= ans.correct?' correct':' wrong';
+  h+=`<div class="${stemCls}"><div class="pp-emq-q">${ppEsc(st.stem)}</div>`;
+  let selCls='';
+  if(reveal) selCls= ans.correct?' correct':' wrong';
+  const lock = reveal ? true : false;
+  const letters=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'];
+  const cur = ans ? ans.picked : (PP._sel!=null?PP._sel:null);
+  const curLetter = cur!=null ? letters[cur] : '–';
+  const curText = cur!=null ? ppEsc(g.options[cur]) : '— select best option —';
+  const hasCls = cur!=null ? ' has' : ' placeholder';
+  h+=`<div class="pp-emqdd" id="pp-emqdd">
+    <button type="button" class="pp-emqdd-btn${selCls}${hasCls}" ${lock?'disabled':''} onclick="ppEmqToggle(event)">
+      <span class="pp-emqdd-letter">${curLetter}</span>
+      <span class="pp-emqdd-lbl">${curText}</span>
+      ${lock?'':'<span class="pp-emqdd-chev">▼</span>'}
+    </button>`;
+  if(!lock){
+    h+=`<div class="pp-emqdd-menu" id="pp-emqdd-menu">`;
+    g.options.forEach((opt,oi)=>{
+      const selc = (cur===oi)?' sel':'';
+      h+=`<button type="button" class="pp-emqdd-item${selc}" onclick="ppEmqSelect(${oi},event)">
+        <span class="pp-emqdd-letter">${letters[oi]}</span>
+        <span class="pp-emqdd-item-text">${ppEsc(opt)}</span>
+      </button>`;
+    });
+    h+=`</div>`;
+  }
+  h+=`</div>`;
+  if(reveal && !ans.correct){
+    h+=`<div style="margin-top:9px;font-size:12px;color:#10b981;font-weight:700">✅ Correct: ${ppEsc(g.options[st.answer])}</div>`;
+  }
+  h+=`</div>`;
+  if(reveal){
+    h+=ppRationale(ans.correct, st.rationale, st.hook);
+  } else {
+    h+=ppAnswerButtons(item.key, 'emq', !!ans);
+  }
+  h+=`</div>`;
+  h+=ppNavRow(reveal);
+  h+=ppJumpGrid();
+  return h;
+}
+
+// ── The two action buttons: Check answer (instant) + Save & Next (review) ──
+function ppAnswerButtons(key, kind, hasAns){
+  // Mode lock: once a mode is chosen for this attempt, only that button shows
+  const m = PP.mode;
+  const checkFn = kind==='sba' ? `ppCheckSBA('${key}')` : `ppCheckEMQ('${key}')`;
+  const saveFn  = kind==='sba' ? `ppSaveSBA('${key}')`  : `ppSaveEMQ('${key}')`;
+  // disabled until a selection is made (or already saved in review mode)
+  const dis = hasAns ? '' : 'disabled';
+  let h=`<div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">`;
+  if(m===null || m==='instant'){
+    h+=`<button class="pp-btn pp-btn-check" id="pp-check-btn" style="flex:1;min-width:140px" ${dis} onclick="${checkFn}">✓ Check answer</button>`;
+  }
+  if(m===null || m==='review'){
+    h+=`<button class="pp-btn pp-btn-save" id="pp-save-btn" style="flex:1;min-width:140px" ${dis} onclick="${saveFn}">💾 Save &amp; next</button>`;
+  }
+  h+=`</div>`;
+  if(m===null){
+    h+=`<div style="font-size:11px;color:#6478a0;margin-top:8px;line-height:1.5;text-align:center">Check answer = see explanation now · Save &amp; next = review everything at the end</div>`;
+  }
+  return h;
+}
+
+// ── Jump grid (like flashcards) — bottom of every question ──
+function ppJumpGrid(){
+  let cells = PP.flat.map((f,i)=>{
+    const a = PP.answers[f.key];
+    const cur = i===PP.idx;
+    let bd='#1a2545', bg='#0d1529', col='#6478a0', fw='600';
+    if(cur){ bd='#00d4ff'; bg='rgba(0,212,255,0.18)'; col='#00d4ff'; fw='800'; }
+    else if(a){
+      if(PP.mode==='instant'){ // colour by correctness
+        if(a.correct){ bd='#10b981'; bg='rgba(16,185,129,0.12)'; col='#10b981'; }
+        else { bd='#f43f5e'; bg='rgba(244,63,94,0.12)'; col='#f43f5e'; }
+      } else { // review: just "answered" (amber), no correctness leak
+        bd='#f59e0b'; bg='rgba(245,158,11,0.12)'; col='#f59e0b';
+      }
+    }
+    const tag = f.kind==='emq'?'•':'';
+    return `<button onclick="ppJumpTo(${i})" title="${f.kind.toUpperCase()} ${i+1}"
+      style="width:34px;height:34px;border-radius:8px;border:2px solid ${bd};background:${bg};
+      color:${col};font-size:11px;font-weight:${fw};cursor:pointer;font-family:'JetBrains Mono',monospace;
+      -webkit-tap-highlight-color:transparent;transition:all 0.15s;flex-shrink:0;position:relative">${i+1}${tag?`<span style="position:absolute;top:1px;right:3px;font-size:7px;color:#f59e0b">${tag}</span>`:''}</button>`;
+  }).join('');
+  return `<div style="margin-top:22px;padding-top:16px;border-top:1px solid #1a2545">
+    <div style="font-size:10px;color:#3a4e78;text-transform:uppercase;letter-spacing:0.07em;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between">
+      <span>Jump to question</span>
+      <span style="font-weight:500;text-transform:none;letter-spacing:0">• = EMQ</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px">${cells}</div>
+  </div>`;
+}
+
+function ppJumpTo(i){
+  PP._sel=null;
+  PP.idx=i;
+  ppRenderQuestion();
+}
+
+function ppRationale(correct, rationale, hook){
+  let h=`<div class="pp-rationale ${correct?'ok':'no'}">`;
+  h+=`<div class="pp-rationale-hd" style="color:${correct?'#10b981':'#f43f5e'}">${correct?'✓ Correct':'✗ Not quite'} — why</div>`;
+  h+=`${ppEsc(rationale||'')}`;
+  if(hook) h+=`<div class="pp-hook">💡 ${ppEsc(hook)}</div>`;
+  h+=`</div>`;
+  return h;
+}
+
+function ppNavRow(_revealedIgnored){
+  const item=PP.flat[PP.idx];
+  const answered = item && !!PP.answers[item.key];
+  const last = PP.idx>=PP.flat.length-1;
+  let h=`<div style="display:flex;gap:10px;margin-top:14px">`;
+  h+=`<button class="pp-btn pp-btn-ghost" style="flex:0 0 auto" ${PP.idx===0?'disabled':''} onclick="ppPrev()">◀ Prev</button>`;
+  if(answered){
+    h+=`<button class="pp-btn pp-btn-next" style="flex:1" onclick="ppNext()">${last?'Finish & see results 🏁':'Next ▶'}</button>`;
+  } else {
+    h+=`<button class="pp-btn pp-btn-ghost" style="flex:1" onclick="ppNext()">Skip ▶</button>`;
+  }
+  h+=`</div>`;
+  return h;
+}
+
+// ── Selection / checking ──
+function ppSelectSBA(oi){
+  PP._sel=oi;
+  document.querySelectorAll('#pp-body .pp-opt').forEach((el,i)=>el.classList.toggle('sel', i===oi));
+  const cb=document.getElementById('pp-check-btn'); if(cb) cb.disabled=false;
+  const sb=document.getElementById('pp-save-btn'); if(sb) sb.disabled=false;
+}
+// INSTANT mode — reveal feedback immediately
+function ppCheckSBA(key){
+  if(PP._sel==null) return;
+  if(PP.mode===null) PP.mode='instant';
+  const item=PP.flat[PP.idx];
+  const correct = PP._sel===item.q.answer;
+  PP.answers[key]={picked:PP._sel, correct};
+  if(!PP.undoStack.includes(key)) PP.undoStack.push(key);
+  PP._sel=null;
+  ppSaveProgress();
+  ppRenderQuestion();
+}
+// REVIEW mode — record silently and advance
+function ppSaveSBA(key){
+  let pick = PP._sel;
+  if(pick==null && PP.answers[key]) pick = PP.answers[key].picked; // re-saving an unchanged answer
+  if(pick==null) return;
+  if(PP.mode===null) PP.mode='review';
+  const item=PP.flat[PP.idx];
+  PP.answers[key]={picked:pick, correct: pick===item.q.answer};
+  if(!PP.undoStack.includes(key)) PP.undoStack.push(key);
+  PP._sel=null;
+  ppSaveProgress();
+  ppNext();
+}
+function ppEmqToggle(ev){
+  if(ev){ ev.stopPropagation(); ev.preventDefault(); }
+  const dd=document.getElementById('pp-emqdd');
+  if(!dd) return;
+  dd.classList.toggle('open');
+}
+function ppEmqSelect(oi, ev){
+  if(ev){ ev.stopPropagation(); ev.preventDefault(); }
+  PP._sel = oi;
+  const dd=document.getElementById('pp-emqdd');
+  if(dd) dd.classList.remove('open');
+  const letters=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'];
+  const item=PP.flat[PP.idx];
+  const btn=dd?dd.querySelector('.pp-emqdd-btn'):null;
+  if(btn && item){
+    btn.classList.remove('placeholder'); btn.classList.add('has');
+    btn.querySelector('.pp-emqdd-letter').textContent=letters[oi];
+    btn.querySelector('.pp-emqdd-lbl').textContent=item.set.options[oi];
+  }
+  if(dd){ dd.querySelectorAll('.pp-emqdd-item').forEach((el,i)=>el.classList.toggle('sel',i===oi)); }
+  const cb=document.getElementById('pp-check-btn'); if(cb) cb.disabled=false;
+  const sb=document.getElementById('pp-save-btn'); if(sb) sb.disabled=false;
+}
+function ppCheckEMQ(key){
+  if(PP._sel==null) return;
+  if(PP.mode===null) PP.mode='instant';
+  const item=PP.flat[PP.idx];
+  const picked=PP._sel;
+  const correct = picked===item.st.answer;
+  PP.answers[key]={picked, correct};
+  if(!PP.undoStack.includes(key)) PP.undoStack.push(key);
+  PP._sel=null;
+  ppSaveProgress();
+  ppRenderQuestion();
+}
+function ppSaveEMQ(key){
+  let pick = PP._sel;
+  if(pick==null && PP.answers[key]) pick = PP.answers[key].picked;
+  if(pick==null) return;
+  if(PP.mode===null) PP.mode='review';
+  const item=PP.flat[PP.idx];
+  const correct = pick===item.st.answer;
+  PP.answers[key]={picked:pick, correct};
+  if(!PP.undoStack.includes(key)) PP.undoStack.push(key);
+  PP._sel=null;
+  ppSaveProgress();
+  ppNext();
+}
+
+function ppNext(){
+  PP._sel=null;
+  if(PP.idx>=PP.flat.length-1){ ppRenderResult(); return; }
+  PP.idx++; ppRenderQuestion();
+}
+function ppPrev(){
+  PP._sel=null;
+  if(PP.idx>0){ PP.idx--; ppRenderQuestion(); }
+}
+
+function ppUndoLast(){
+  if(!PP.undoStack.length){ toast('Nothing to undo','err'); return; }
+  const key=PP.undoStack.pop();
+  delete PP.answers[key];
+  // jump back to that question
+  const i=PP.flat.findIndex(f=>f.key===key);
+  if(i>=0){ PP.idx=i; }
+  PP._sel=null;
+  ppSaveProgress();
+  ppRenderQuestion();
+  toast('Answer cleared','ok');
+}
+
+// ── Result screen ──
+function ppRenderResult(){
+  PP.view='result';
+  const total=PP.flat.length;
+  const answered=Object.keys(PP.answers).length;
+  const correct=Object.values(PP.answers).filter(a=>a.correct).length;
+  const pct=total?Math.round(correct/total*100):0;
+  document.getElementById('pp-hdr-title').textContent='🏁 Results';
+  document.getElementById('pp-hdr-sub').textContent=PP.paper.topic||'';
+  const grade = pct>=80?{t:'Excellent',c:'#10b981',e:'🏆'}:pct>=65?{t:'Good — exam-ready',c:'#00d4ff',e:'✅'}:pct>=50?{t:'Getting there',c:'#f59e0b',e:'📈'}:{t:'Needs review',c:'#f43f5e',e:'📚'};
+  const body=document.getElementById('pp-body');
+  let h=`<div style="text-align:center;padding:20px 0 10px">
+    <div style="font-size:56px;margin-bottom:6px">${grade.e}</div>
+    <div style="font-size:54px;font-weight:800;font-family:'JetBrains Mono',monospace;color:${grade.c}">${pct}%</div>
+    <div style="font-size:16px;font-weight:700;color:${grade.c};margin-top:4px">${grade.t}</div>
+    <div style="font-size:13px;color:#6478a0;margin-top:8px">${correct} / ${total} correct${answered<total?` · ${total-answered} skipped`:''}</div>
+  </div>`;
+
+  // breakdown SBA vs EMQ
+  let sbaC=0,sbaT=0,emqC=0,emqT=0;
+  PP.flat.forEach(f=>{ const a=PP.answers[f.key]; if(f.kind==='sba'){sbaT++; if(a&&a.correct)sbaC++;} else {emqT++; if(a&&a.correct)emqC++;} });
+  h+=`<div style="display:flex;gap:12px;margin:18px 0">`;
+  if(sbaT) h+=`<div style="flex:1;background:#0a1322;border:1px solid #1a2545;border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:#6478a0;font-weight:700">SBA</div><div style="font-size:22px;font-weight:800;color:#00d4ff;font-family:'JetBrains Mono',monospace">${sbaC}/${sbaT}</div></div>`;
+  if(emqT) h+=`<div style="flex:1;background:#0a1322;border:1px solid #1a2545;border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:#6478a0;font-weight:700">EMQ</div><div style="font-size:22px;font-weight:800;color:#f59e0b;font-family:'JetBrains Mono',monospace">${emqC}/${emqT}</div></div>`;
+  h+=`</div>`;
+
+  // previous attempts
+  const prev=(PP.paper.attempts||[]).slice().reverse();
+  if(prev.length){
+    h+=`<div style="font-size:12px;font-weight:700;color:#6478a0;text-transform:uppercase;letter-spacing:0.06em;margin:10px 0 8px">Past attempts</div>`;
+    prev.slice(0,5).forEach(a=>{
+      h+=`<div style="display:flex;justify-content:space-between;padding:9px 13px;background:#0a1322;border:1px solid #1a2545;border-radius:11px;margin-bottom:6px;font-size:12px"><span style="color:#a8b8d8">${a.date}</span><span style="color:${a.pct>=65?'#10b981':'#f59e0b'};font-weight:700;font-family:'JetBrains Mono',monospace">${a.pct}% · ${a.correct}/${a.total}</span></div>`;
+    });
+  }
+
+  // ── Detailed review ──
+  if(PP.mode==='review'){
+    // Full per-question breakdown with all explanations
+    h+=`<div style="font-size:12px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.06em;margin:18px 0 10px">📖 Full review &amp; explanations</div>`;
+    const letters=['A','B','C','D','E','F','G','H','I','J','K','L'];
+    PP.flat.forEach((f,i)=>{
+      const a=PP.answers[f.key];
+      const isSba=f.kind==='sba';
+      const opts = isSba?f.q.options:f.set.options;
+      const corrIdx = isSba?f.q.answer:f.st.answer;
+      const stem = isSba?f.q.stem:f.st.stem;
+      const lead = isSba?f.q.lead:(f.set.theme||'');
+      const rat = isSba?f.q.rationale:f.st.rationale;
+      const hook = isSba?f.q.hook:f.st.hook;
+      const ok = a&&a.correct;
+      const skipped = !a;
+      const bdc = skipped?'#3a4e78':ok?'#10b981':'#f43f5e';
+      const bgc = skipped?'rgba(58,78,120,0.06)':ok?'rgba(16,185,129,0.06)':'rgba(244,63,94,0.06)';
+      const icon = skipped?'⊘':ok?'✅':'❌';
+      h+=`<div style="padding:13px 15px;background:${bgc};border:1px solid ${bdc}55;border-left:4px solid ${bdc};border-radius:12px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+          <span style="font-size:14px">${icon}</span>
+          <span style="font-size:10px;font-weight:800;color:${isSba?'#00d4ff':'#f59e0b'};font-family:'JetBrains Mono',monospace">${isSba?'SBA':'EMQ'} ${i+1}</span>
+        </div>
+        <div style="font-size:13px;color:#e2e9f7;line-height:1.55;margin-bottom:8px">${ppEsc(stem)}</div>`;
+      if(lead) h+=`<div style="font-size:12px;color:#a8b8d8;font-weight:600;margin-bottom:8px">${ppEsc(lead)}</div>`;
+      // your answer vs correct
+      h+=`<div style="font-size:12px;line-height:1.6">`;
+      if(skipped){
+        h+=`<div style="color:#6478a0">You skipped this.</div>`;
+      } else if(!ok){
+        h+=`<div style="color:#f43f5e"><strong>Your answer:</strong> ${letters[a.picked]}. ${ppEsc(opts[a.picked])}</div>`;
+      }
+      h+=`<div style="color:#10b981"><strong>Correct:</strong> ${letters[corrIdx]}. ${ppEsc(opts[corrIdx])}</div>`;
+      h+=`</div>`;
+      if(rat) h+=`<div style="margin-top:9px;font-size:12px;color:#c8d4ec;line-height:1.55;padding:9px 12px;background:rgba(139,92,246,0.07);border-radius:9px">${ppEsc(rat)}</div>`;
+      if(hook) h+=`<div style="margin-top:7px;font-size:12px;color:#f0c674;font-weight:600;padding:7px 11px;background:rgba(245,158,11,0.1);border-left:3px solid #f59e0b;border-radius:7px">💡 ${ppEsc(hook)}</div>`;
+      h+=`</div>`;
+    });
+  } else {
+    // Instant mode — concise wrong-only recap (explanations already seen live)
+    const wrong=PP.flat.filter(f=>{const a=PP.answers[f.key];return a&&!a.correct;});
+    if(wrong.length){
+      h+=`<div style="font-size:12px;font-weight:700;color:#f43f5e;text-transform:uppercase;letter-spacing:0.06em;margin:16px 0 8px">Review — got wrong (${wrong.length})</div>`;
+      wrong.forEach(f=>{
+        const stem = f.kind==='sba'?f.q.stem:f.st.stem;
+        const hook = f.kind==='sba'?f.q.hook:f.st.hook;
+        h+=`<div style="padding:11px 14px;background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:12px;margin-bottom:8px"><div style="font-size:12px;color:#c8d4ec;line-height:1.5">${ppEsc(stem.slice(0,110))}${stem.length>110?'…':''}</div>${hook?`<div style="font-size:12px;color:#f0c674;margin-top:6px;font-weight:600">💡 ${ppEsc(hook)}</div>`:''}</div>`;
+      });
+    }
+  }
+
+  h+=`<div style="display:flex;gap:10px;margin-top:22px">
+    <button class="pp-btn pp-btn-ghost" style="flex:1" onclick="ppBack()">📄 All papers</button>
+    <button class="pp-btn pp-btn-next" style="flex:1" onclick="ppRedo()">🔁 Redo paper</button>
+  </div>`;
+  body.innerHTML=h;
+  body.scrollTop=0;
+
+  // save attempt (once) + clear in-progress resume state
+  ppSaveAttempt(pct, correct, total);
+  ppClearProgress(PP.fileId);
+}
+
+function ppRedo(){
+  ppClearProgress(PP.fileId);
+  PP.idx=0; PP.answers={}; PP.undoStack=[]; PP._sel=null; PP.view='paper'; PP.mode=null;
+  delete PP._savedThisResult;
+  ppRenderQuestion();
+}
+
+/* ── In-progress answer persistence (resume a half-finished paper) ── */
+const PP_PROG_KEY='og_team_paper_progress';
+function ppLoadProgressMap(){ try{ return JSON.parse(localStorage.getItem(PP_PROG_KEY)||'{}'); }catch(e){ return {}; } }
+function ppWriteProgressMap(m){ try{ localStorage.setItem(PP_PROG_KEY, JSON.stringify(m)); }catch(e){} }
+function ppSaveProgress(){
+  if(!PP.fileId) return;
+  const answered=Object.keys(PP.answers).length;
+  const map=ppLoadProgressMap();
+  if(answered===0){ delete map[PP.fileId]; ppWriteProgressMap(map); return; }
+  map[PP.fileId]={ answers:PP.answers, idx:PP.idx, mode:PP.mode, undoStack:PP.undoStack, total:PP.flat.length, savedAt:Date.now() };
+  ppWriteProgressMap(map);
+}
+function ppGetProgress(fileId){ return ppLoadProgressMap()[fileId]||null; }
+function ppClearProgress(fileId){ const m=ppLoadProgressMap(); delete m[fileId]; ppWriteProgressMap(m); }
+function ppShortWhen(ts){ try{ return new Date(ts).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+
+// Resume / restart choice for a half-finished paper
+function ppRenderResumePrompt(prog){
+  const total=PP.flat.length;
+  const done=Object.keys(prog.answers).length;
+  const correct=Object.values(prog.answers).filter(a=>a&&a.correct).length;
+  document.getElementById('pp-hdr-title').textContent=PP.paper.topic||'Paper';
+  document.getElementById('pp-hdr-sub').textContent='Resume or start fresh';
+  const attempts=(PP.paper.attempts||[]).length;
+  const body=document.getElementById('pp-body');
+  body.innerHTML=`
+    <div style="text-align:center;padding:24px 16px">
+      <div style="font-size:46px;margin-bottom:10px">⏸️</div>
+      <div style="font-size:18px;font-weight:800;color:#f0f4ff">You have a paper in progress</div>
+      <div style="font-size:13px;color:#6478a0;margin-top:10px;line-height:1.6">
+        You answered <strong style="color:#00d4ff">${done} of ${total}</strong> questions
+        (${correct} correct so far).<br>Last saved ${ppShortWhen(prog.savedAt||Date.now())}.
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px;margin-top:8px">
+      <button class="pp-btn pp-btn-next" onclick="ppResume()">▶ Resume where I left off</button>
+      <button class="pp-btn pp-btn-ghost" onclick="ppStartFresh()">🔁 Start fresh (clear my choices)</button>
+    </div>
+    <div style="font-size:11px;color:#6478a0;text-align:center;margin-top:16px;line-height:1.6">
+      ${attempts?`Your ${attempts} completed attempt${attempts===1?'':'s'} ${attempts===1?'is':'are'} kept either way.`:'Completed-paper scores are stored separately and are never lost.'}
+    </div>`;
+}
+function ppResume(){
+  const prog=ppGetProgress(PP.fileId);
+  if(!prog){ ppRenderQuestion(); return; }
+  PP.answers=prog.answers||{};
+  PP.undoStack=prog.undoStack||[];
+  PP.mode=prog.mode||null;
+  let target=PP.flat.findIndex(f=>!PP.answers[f.key]);
+  PP.idx = target>=0 ? target : (prog.idx||0);
+  ppRenderQuestion();
+  toast('Resumed','ok');
+}
+function ppStartFresh(){
+  ppClearProgress(PP.fileId);
+  PP.idx=0; PP.answers={}; PP.undoStack=[]; PP.mode=null; PP._sel=null;
+  ppRenderQuestion();
+  toast('Fresh start — previous scores kept','ok');
+}
+
+// ── Save attempt into the paper's JSON on Drive ──
+async function ppSaveAttempt(pct, correct, total){
+  if(!PP.fileId || !S.token) return;
+  if(PP._savedThisResult===PP.fileId+':'+pct+':'+correct) return; // guard double-save on re-render
+  try{
+    // read latest, append attempt, write back
+    const r=await gf(`https://www.googleapis.com/drive/v3/files/${PP.fileId}?alt=media`);
+    const data=await r.json();
+    if(!Array.isArray(data.attempts)) data.attempts=[];
+    data.attempts.push({date:spToday(), pct, correct, total, at:Date.now()});
+    if(data.attempts.length>50) data.attempts=data.attempts.slice(-50);
+    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${PP.fileId}?uploadType=media`,
+      {method:'PATCH',headers:{Authorization:`Bearer ${S.token}`,'Content-Type':'application/json'},body:JSON.stringify(data)});
+    PP.paper.attempts=data.attempts;
+    // update cached list entry so best-score chip refreshes
+    const li=PP.list.find(p=>p.fileId===PP.fileId); if(li) li.data.attempts=data.attempts;
+    PP._savedThisResult=PP.fileId+':'+pct+':'+correct;
+  }catch(e){ console.warn('PP attempt save:',e.message); }
+}
+
+
+/* ════════ UPLOADER ════════ */
+const UP = { topic:'', parsed:null, fileName:'', category:'', subcategory:'' };
+function renderUploader(){
+  document.getElementById('pp-view').classList.remove('on');
+  const main=document.getElementById('tw-main');
+  main.innerHTML = `
+    <div class="up-card">
+      <div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:4px">📥 Add SBA / EMQ Papers</div>
+      <div style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:16px">Load the JSON paper files shared with you. They're saved on <strong>this device only</strong> — nothing is uploaded anywhere.</div>
+
+      <label class="up-label">Category</label>
+      <select class="up-sel" id="up-cat" style="margin-bottom:12px" onchange="upCatChange()">
+        <option value="">— select category —</option>
+        <option value="Obstetrics">🤰 Obstetrics</option>
+        <option value="Gynaecology">🩺 Gynaecology</option>
+        <option value="TOG">📰 TOG</option>
+        <option value="Statistics">📊 Statistics</option>
+        <option value="Paper books">📚 Paper books</option>
+      </select>
+
+      <label class="up-label">Section <span id="up-sub-hint" style="font-weight:400;text-transform:none;color:var(--t4)"></span></label>
+      <select class="up-sel" id="up-sub" style="margin-bottom:12px;display:block" onchange="upSubSel()"><option value="">— select category first —</option></select>
+      <input class="up-inp" id="up-sub-free" style="margin-bottom:12px;display:none" placeholder="Type a section (optional)…" oninput="upSubFree()">
+
+      <label class="up-label">Topic</label>
+      <input class="up-inp" id="up-topic" style="margin-bottom:12px" placeholder="e.g. Postpartum haemorrhage" oninput="UP.topic=this.value.trim();upBtn()">
+
+      <div class="up-drop" id="up-drop">
+        <input type="file" accept=".json,application/json" onchange="upFile(this.files[0])">
+        <div style="font-size:30px;margin-bottom:6px">📄</div>
+        <div style="font-size:14px;font-weight:600;color:var(--t1)">Drop or tap to load paper JSON</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:3px">ogr-paper-v1 format</div>
+      </div>
+      <div id="up-status" style="font-size:12px;text-align:center;margin-top:8px;min-height:16px"></div>
+      <div id="up-preview" style="margin-top:10px"></div>
+      <button class="up-btn up-btn-go" id="up-go" style="margin-top:14px;display:none" onclick="upSave()">💾 Save to this device</button>
+    </div>
+
+    <div class="up-card">
+      <div style="font-size:14px;font-weight:800;color:var(--t1);margin-bottom:12px">📚 Saved papers <span id="up-count" style="color:var(--t3);font-weight:400"></span></div>
+      <div id="up-list"></div>
+    </div>
+  `;
+  upRenderList();
+  // restore last cat
+  const lc=localStorage.getItem('up_last_cat'); if(lc){ document.getElementById('up-cat').value=lc; upCatChange(true); }
+}
+function upCatChange(fromInit){
+  const cat=document.getElementById('up-cat').value;
+  UP.category=cat; if(cat) localStorage.setItem('up_last_cat',cat);
+  const sel=document.getElementById('up-sub'), free=document.getElementById('up-sub-free'), hint=document.getElementById('up-sub-hint');
+  const subs=PP_TAXONOMY[cat]||[];
+  if(cat&&subs.length){ sel.style.display='block'; free.style.display='none'; sel.innerHTML='<option value="">— select section —</option>'+subs.map(s=>'<option value="'+s.replace(/"/g,'&quot;')+'">'+s+'</option>').join(''); hint.textContent='(required)'; }
+  else if(cat){ sel.style.display='none'; free.style.display='block'; if(!fromInit) free.value=''; hint.textContent='(optional)'; }
+  else { sel.style.display='block'; free.style.display='none'; sel.innerHTML='<option value="">— select category first —</option>'; hint.textContent=''; }
+  UP.subcategory=''; upBtn();
+}
+function upSubSel(){ UP.subcategory=document.getElementById('up-sub').value; upBtn(); }
+function upSubFree(){ UP.subcategory=document.getElementById('up-sub-free').value.trim(); upBtn(); }
+function upSetCat(cat,sub){
+  if(cat&&PP_TAXONOMY[cat]!==undefined){ document.getElementById('up-cat').value=cat; upCatChange(true); }
+  if(sub){ const subs=PP_TAXONOMY[cat]||[]; if(subs.length){ const s=document.getElementById('up-sub'); if(s){s.value=sub;UP.subcategory=sub;} } else { const f=document.getElementById('up-sub-free'); if(f){f.value=sub;UP.subcategory=sub;} } }
+  upBtn();
+}
+function upFile(file){
+  if(!file) return;
+  const status=document.getElementById('up-status');
+  status.style.color='var(--t3)'; status.textContent='⏳ Reading…';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      let raw=e.target.result.replace(/[\u201c\u201d]/g,'"').replace(/[\u2018\u2019]/g,"'").replace(/,(\s*[}\]])/g,'$1');
+      const s=raw.indexOf('{'), en=raw.lastIndexOf('}');
+      if(s===-1) throw new Error('No JSON found');
+      const data=JSON.parse(raw.slice(s,en+1));
+      const errs=upValidate(data);
+      if(errs.length) throw new Error(errs[0]);
+      UP.parsed=data; UP.fileName=file.name;
+      const tp=document.getElementById('up-topic'); const tag=data.topic||data.folderTag||'';
+      if(tp&&!tp.value.trim()&&tag){ tp.value=tag; UP.topic=tag; }
+      if(data.category) upSetCat(data.category, data.subcategory||'');
+      document.getElementById('up-drop').style.borderColor='var(--green)';
+      status.style.color='var(--green)';
+      const ns=(data.sba||[]).length, ne=(data.emq||[]).reduce((a,g)=>a+(g.stems||[]).length,0);
+      status.textContent='✅ '+ns+' SBA · '+ne+' EMQ stems';
+      upPreview(data); upBtn();
+    }catch(err){ status.style.color='var(--rose)'; status.textContent='❌ '+err.message; UP.parsed=null; document.getElementById('up-preview').innerHTML=''; upBtn(); }
+  };
+  reader.readAsText(file);
+}
+function upValidate(d){
+  const e=[];
+  if(typeof d!=='object'||!d){ e.push('Not a JSON object'); return e; }
+  const sba=d.sba||[], emq=d.emq||[];
+  if(!Array.isArray(sba)||!Array.isArray(emq)){ e.push('sba/emq must be arrays'); return e; }
+  if(!sba.length&&!emq.length){ e.push('No SBA or EMQ questions'); return e; }
+  sba.forEach((q,i)=>{ if(!q.stem||!q.lead) e.push('SBA '+(i+1)+': missing stem/lead'); if(!Array.isArray(q.options)||q.options.length!==5) e.push('SBA '+(i+1)+': needs 5 options'); if(!Number.isInteger(q.answer)) e.push('SBA '+(i+1)+': bad answer index'); });
+  emq.forEach((g,i)=>{ if(!Array.isArray(g.options)||g.options.length<2) e.push('EMQ '+(i+1)+': needs options'); if(!Array.isArray(g.stems)||!g.stems.length) e.push('EMQ '+(i+1)+': needs stems'); });
+  return e;
+}
+function upPreview(d){
+  const ns=(d.sba||[]).length, ne=(d.emq||[]).length;
+  document.getElementById('up-preview').innerHTML='<div style="font-size:12px;color:var(--t2);padding:10px 12px;background:var(--bg-2);border-radius:9px;border:1px solid var(--bg-3)"><strong>'+upEsc(d.topic||'Paper')+'</strong> — '+ns+' SBA, '+ne+' EMQ set'+(ne===1?'':'s')+(d.source?' · '+upEsc(d.source):'')+'</div>';
+}
+function upEsc(s){ return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function upBtn(){
+  const subs=PP_TAXONOMY[UP.category];
+  const subReq=UP.category&&subs&&subs.length>0;
+  const ok=UP.parsed&&UP.topic&&UP.category&&(!subReq||UP.subcategory);
+  const b=document.getElementById('up-go'); if(b) b.style.display=ok?'block':'none';
+}
+async function upSave(){
+  if(!UP.parsed||!UP.topic||!UP.category){ toast('Fill category, topic and load a file','rose'); return; }
+  const subs=PP_TAXONOMY[UP.category]||[];
+  if(subs.length&&!UP.subcategory){ toast('Pick a section','rose'); return; }
+  const safe=UP.topic.replace(/[<>:"/\\|?*]/g,'').trim();
+  const id='papers__'+UP.category+'__'+(UP.subcategory||'_')+'__'+safe;
+  const payload=UP.parsed;
+  payload.topic=payload.topic||UP.topic; payload.category=UP.category; payload.subcategory=UP.subcategory||'';
+  // merge attempts if overwriting
+  try{ const old=await dbGet(id); if(old&&Array.isArray(old.data.attempts)) payload.attempts=old.data.attempts; }catch(e){}
+  const rec={ id, name:'papers__'+safe+'.json', category:UP.category, subcategory:UP.subcategory||'', data:payload, savedAt:Date.now() };
+  await dbPut(rec);
+  toast('✅ Saved "'+UP.topic+'"','green');
+  // reset
+  UP.parsed=null; UP.fileName='';
+  document.getElementById('up-status').textContent=''; document.getElementById('up-preview').innerHTML='';
+  document.getElementById('up-drop').style.borderColor='';
+  document.getElementById('up-topic').value=''; UP.topic='';
+  document.getElementById('up-go').style.display='none';
+  PP.loaded=false; // force practice list reload
+  upRenderList();
+}
+async function upRenderList(){
+  const recs=await dbAll();
+  document.getElementById('up-count').textContent='('+recs.length+')';
+  const box=document.getElementById('up-list');
+  if(!recs.length){ box.innerHTML='<div style="font-size:12px;color:var(--t3);text-align:center;padding:14px">No papers saved yet.</div>'; return; }
+  // group by category
+  recs.sort((a,b)=>(a.category+a.subcategory).localeCompare(b.category+b.subcategory));
+  box.innerHTML=recs.map(r=>{
+    const d=r.data||{}; const ns=(d.sba||[]).length, ne=(d.emq||[]).reduce((a,g)=>a+(g.stems||[]).length,0);
+    return '<div class="up-row"><div style="min-width:0"><div style="font-size:13px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+upEsc(d.topic||r.name)+'</div><div class="meta">'+upEsc(r.category)+(r.subcategory?' · '+upEsc(r.subcategory):'')+' · '+ns+' SBA, '+ne+' EMQ</div></div><button class="up-del" onclick="upDel(\''+r.id.replace(/'/g,"\\'")+'\')">Delete</button></div>';
+  }).join('');
+}
+async function upDel(id){
+  if(!confirm('Delete this paper from your device?')) return;
+  await dbDel(id);
+  PP.loaded=false;
+  upRenderList();
+  toast('Deleted','info');
+}
+// drag drop
+window.addEventListener('DOMContentLoaded',()=>{
+  twTab('practice');
+});
+document.addEventListener('click',e=>{ const dd=document.getElementById('pp-emqdd'); if(dd&&dd.classList.contains('open')&&!e.target.closest('#pp-emqdd')) dd.classList.remove('open'); });
+document.addEventListener('dragover',e=>{ if(e.target.closest&&e.target.closest('#up-drop')){ e.preventDefault(); document.getElementById('up-drop').classList.add('over'); }});
+document.addEventListener('dragleave',e=>{ if(e.target.closest&&e.target.closest('#up-drop')){ document.getElementById('up-drop').classList.remove('over'); }});
+document.addEventListener('drop',e=>{ const dz=e.target.closest&&e.target.closest('#up-drop'); if(dz){ e.preventDefault(); dz.classList.remove('over'); const f=e.dataTransfer.files[0]; if(f&&(f.name.endsWith('.json')||f.type==='application/json')) upFile(f); else toast('Drop a .json file','rose'); }});
+</script>
+</body>
+</html>
